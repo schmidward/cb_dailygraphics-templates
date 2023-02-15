@@ -165,11 +165,13 @@ module.exports = function (config) {
     .data(config.data)
     .enter()
     .append("path")
-    .attr("class", function (d, i) {
-      return "line " + classify(d.name);
-    })
+    .attr("class", d => "line " + classify(d.name))
     .attr("stroke", (d) => colorScale(d.name))
     .attr("d", (d) => line(d.values));
+
+  var final = "at" in Array.prototype ?
+    series => series.values.at(-1) :
+    series => series.values.slice().pop();
 
   chartElement
     .append("g")
@@ -178,14 +180,8 @@ module.exports = function (config) {
     .data(config.data)
     .enter()
     .append("text")
-    .attr("x", function (d, i) {
-      var last = d.values[d.values.length - 1];
-      return xScale(last[dateColumn]) + 5;
-    })
-    .attr("y", function (d) {
-      var last = d.values[d.values.length - 1];
-      return yScale(last[valueColumn]) + 3;
-    });
+    .attr("x", d => xScale(final(d)[dateColumn]) + 5)
+    .attr("y", d => yScale(final(d)[valueColumn]) + 3);
 
   /*
    * Render annotations.

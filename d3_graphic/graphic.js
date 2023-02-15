@@ -14,7 +14,7 @@ var render = function () {
   containerElement.innerHTML = "";
   var containerWidth = containerElement.offsetWidth;
 
-  var container = d3.select(containerSelector);
+  var container = d3.select(containerElement);
   var svg = container.append("svg");
 
   //run your D3 functions here

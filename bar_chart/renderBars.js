@@ -19,30 +19,13 @@ var renderBarChart = function (config) {
   var labelMargin = 8;
   var valueGap = 6;
 
-  // Setting that can be adjusted in the google sheet
-  const labelWidth = config.options.label_width;
-  const axis = config.options.axis;
-  const f = config.options.number_format;
-  const roundTicksFactor = config.options.round_ticks_factor;
-  const ticksX = config.options.ticks_x;
-  const highlight = config.data.map((d) => d.highlight).includes("highlight");
-  const annotationLabel = config.options.annotation_label;
-  const annotationLabelAlign = config.options.annotation_label_align;
-  const annotationValue = config.options.annotation_value;
-  const annotationRangeMin = config.options.annotation_range_min;
-  const annotationRangeMax = config.options.annotation_range_max;
+  var labelWidth = 120;
+  var roundTicksFactor = 0.05;
+  var ticksX = 4;
+  var highlight = config.data.map((d) => d.highlight).includes("highlight");
 
-  var valueFormat;
+  var valueFormat = d3.format("~%");
 
-  if (f == "regular") {
-    valueFormat = d3.format(",");
-  } else if (f == "percent rounded") {
-    valueFormat = d3.format(".0%");
-  } else if (f == "percent decimal") {
-    valueFormat = d3.format("~%");
-  } else {
-    valueFormat = d3.format("$,");
-  }
 
   var floors = config.data.map((d) => Math.floor(d[valueColumn] / roundTicksFactor) * roundTicksFactor);
 
@@ -59,7 +42,7 @@ var renderBarChart = function (config) {
   }
 
   var margins = {
-    top: annotationLabel ? 22 : 0,
+    top: 0,
     right: max == 0 ? labelWidth + labelMargin : 24,
     bottom: 20,
     left: max == 0 ? 15 : labelWidth + labelMargin,
@@ -88,26 +71,24 @@ var renderBarChart = function (config) {
   // Create D3 scale objects.
   var xScale = d3.scaleLinear().domain([min, max]).range([0, chartWidth]);
 
-  if (axis == "show") {
-    // Create D3 axes.
-    var xAxis = d3
-      .axisBottom()
-      .scale(xScale)
-      .ticks(ticksX)
-      .tickFormat(function (d) {
-        return valueFormat(d);
-      });
+  // Create D3 axes.
+  var xAxis = d3
+    .axisBottom()
+    .scale(xScale)
+    .ticks(ticksX)
+    .tickFormat(function (d) {
+      return valueFormat(d);
+    });
 
-    // Render axes to chart.
-    chartElement.append("g").attr("class", "x axis").attr("transform", makeTranslate(0, chartHeight)).call(xAxis);
+  // Render axes to chart.
+  chartElement.append("g").attr("class", "x axis").attr("transform", makeTranslate(0, chartHeight)).call(xAxis);
 
-    // Render grid to chart.
-    chartElement
-      .append("g")
-      .attr("class", "x grid")
-      .attr("transform", makeTranslate(0, chartHeight))
-      .call(xAxis.tickSize(-chartHeight, 0, 0).tickFormat(""));
-  }
+  // Render grid to chart.
+  chartElement
+    .append("g")
+    .attr("class", "x grid")
+    .attr("transform", makeTranslate(0, chartHeight))
+    .call(xAxis.tickSize(-chartHeight, 0, 0).tickFormat(""));
 
   //Render bars to chart.
   chartElement
@@ -134,52 +115,6 @@ var renderBarChart = function (config) {
       .attr("x2", xScale(0))
       .attr("y1", 0)
       .attr("y2", chartHeight);
-  }
-
-  // Render annotation
-  if (annotationValue) {
-    chartElement
-      .append("line")
-      .attr("class", "annotation-line")
-      .attr("x1", xScale(annotationValue))
-      .attr("x2", xScale(annotationValue))
-      .attr("y1", -20)
-      .attr("y2", chartHeight + 6)
-      .style("stroke", COLORS.gray1)
-      .style("stroke-width", 1)
-      .style("stroke-dasharray", 2);
-  }
-
-  if (annotationRangeMin) {
-    chartElement
-      .append("rect")
-      .attr("class", "annotation-range")
-      .attr("x", xScale(annotationRangeMin))
-      .attr("width", Math.abs(xScale(annotationRangeMax) - xScale(annotationRangeMin)))
-      .attr("y", -20)
-      .attr("height", chartHeight + 26)
-      .style("fill", COLORS.gray3)
-      .style("opacity", 0.5);
-  }
-
-  if (annotationLabel !== undefined && annotationValue !== undefined) {
-    chartElement
-      .append("text")
-      .attr("class", "annotation-label")
-      .text(annotationLabel + ": " + valueFormat(annotationValue))
-      .attr("x", annotationLabelAlign == "left" ? xScale(annotationValue) + 6 : xScale(annotationValue) - 6)
-      .attr("y", -6)
-      .style("text-anchor", annotationLabelAlign == "left" ? "start" : "end");
-  }
-
-  if (annotationLabel !== undefined && annotationRangeMin !== undefined) {
-    chartElement
-      .append("text")
-      .attr("class", "annotation-label")
-      .text(annotationLabel + ": " + valueFormat(annotationRangeMin) + "-" + valueFormat(annotationRangeMax))
-      .attr("x", annotationLabelAlign == "left" ? xScale(annotationRangeMax) + 6 : xScale(annotationRangeMin) - 6)
-      .attr("y", -6)
-      .style("text-anchor", annotationLabelAlign == "left" ? "start" : "end");
   }
 
   // Render bar labels.
