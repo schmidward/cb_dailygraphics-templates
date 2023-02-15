@@ -13,7 +13,7 @@ var onWindowLoaded = function () {
 // Render the graphic(s)
 var render = function (data) {
   // Render the chart!
-  var container = "#column-chart";
+  var container = ".graphic";
   var element = document.querySelector(container);
   var width = element.offsetWidth;
   renderColumnChart({
@@ -35,7 +35,7 @@ var render = function (data) {
   //   grouped[d.category].push(d);
   // }
   // /* select the outer container and remove the fallback */
-  // var outer = document.querySelector("#column-chart");
+  // var outer = document.querySelector(".graphic");
   // outer.classList.add("small-multiples");
   // var fallback = outer.querySelector(".fallback");
   // if (fallback) fallback.remove();

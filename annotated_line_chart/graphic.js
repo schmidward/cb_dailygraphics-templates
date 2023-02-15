@@ -68,7 +68,7 @@ var formatData = function (data) {
  * Render the graphic(s).
  */
 var render = function (data, annotations) {
-  var container = "#annotated-line-chart";
+  var container = ".graphic";
   var element = document.querySelector(container);
   var width = element.offsetWidth;
 

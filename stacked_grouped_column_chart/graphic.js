@@ -50,7 +50,7 @@ var formatData = function (input) {
 
 // Render the graphic(s). Called by pym with the container width.
 var render = function (data) {
-  var container = "#stacked-grouped-column-chart";
+  var container = ".graphic";
   var element = document.querySelector(container);
   var width = element.offsetWidth;
   // Render the chart!

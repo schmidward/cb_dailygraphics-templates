@@ -48,7 +48,7 @@ var formatData = function (input) {
 // Render the graphic(s). Called by pym with the container width.
 var render = function (data) {
   // Render the chart!
-  var container = "#stacked-bar-chart";
+  var container = ".graphic";
   var element = document.querySelector(container);
   var width = element.offsetWidth;
   renderStackedBarChart({

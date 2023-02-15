@@ -12,7 +12,7 @@ var onWindowLoaded = function () {
 // Render the graphic(s). Called by pym with the container width.
 var render = function (data) {
   // Render the chart!
-  var container = "#dot-chart";
+  var container = ".graphic";
   var element = document.querySelector(container);
   var width = element.offsetWidth;
   renderDotChart({

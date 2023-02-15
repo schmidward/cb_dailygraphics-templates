@@ -41,7 +41,7 @@ var formatData = function (data) {
 // Render the graphic(s). Called by pym with the container width.
 var render = function (data) {
   // Render the chart!
-  var container = "#line-chart";
+  var container = ".graphic";
   var element = document.querySelector(container);
   var width = element.offsetWidth;
   renderLineChart({
@@ -54,7 +54,7 @@ var render = function (data) {
 
   // replace the above code with the following lines for small multiples
 
-  // var outer = document.querySelector("#line-chart");
+  // var outer = document.querySelector(".graphic");
   // outer.classList.add("small-multiple");
   // for (var series of data) {
   //   var container = document.querySelector(`[data-series="${series.name}"]`);
