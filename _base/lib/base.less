@@ -3,6 +3,9 @@
 @screen-mobile-above: ~"screen and (min-width: 501px)";
 @screen-mobile: ~"screen and (max-width: 500px)";
 
+@mobile: @screen-mobile;
+@desktop: @screen-mobile-above;
+
 // Colors
 @purple1: #855279;
 @purple2: #b575bb;
@@ -39,12 +42,14 @@
 @green3: #A7DCBC;
 
 // Fonts
+@serif: "IBM Plex Serif", Times, serif;
 .serif() {
-  font-family: "IBM Plex Serif", Times, serif;
+  font-family: @serif;
 }
 
+@sans-serif: "Barlow Condensed", Helvetica, Arial, sans-serif;
 .sans-serif() {
-  font-family: "Barlow Condensed", Helvetica, Arial, sans-serif;
+  font-family: @sans-serif;
 }
 
 // Mixins
@@ -55,18 +60,6 @@
     height: 0;
     clear: both;
   }
-}
-
-// NPR multimedia-template
-.mmedia-constrained() {
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 650px;
-}
-
-.mmedia-constrained-centered() {
-  .mmedia-constrained();
-  text-align: center;
 }
 
 // Base styles
@@ -96,7 +89,7 @@ svg {
 
 h1 {
   .sans-serif();
-  margin: 0 0 33px 0;
+  margin: 0 0 11px 0;
   font-size: 1.5em;
   font-weight: 600; // Semibold
   color: @gray1;
@@ -106,7 +99,6 @@ h2 {
   color: @gray1;
   font-size: 0.9em;
   font-weight: 400;
-  margin: -22px 0 22px 0;
 }
 
 h3 {
@@ -176,7 +168,7 @@ a:active {
 }
 
 .key {
-  margin: -11px 0 33px 0;
+  margin: 0 0 11px 0;
   padding: 0;
   list-style-type: none;
 
@@ -248,7 +240,7 @@ svg {
   }
 }
 
-.zero-line {
+.zero-line, .tick .zero-line {
   stroke: @gray1;
   stroke-width: 1px;
   shape-rendering: crispEdges;
@@ -323,23 +315,6 @@ rect {
 
 .x text {
   .serif();
-}
-
-// HOMEPAGE
-// * styles for when a project is embedded on the homepage
-// * (if someone clicked the "This code will be embedded on the NPR homepage."
-// * checkbox when pulling the embed code.)
-body.hp {
-  padding-top: 0;
-  padding-bottom: 10px;
-}
-
-// CHILDLINK
-// * Direct links to the child page (iOS app workaround link)
-body.childlink {
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 800px;
 }
 
 // Accessibility styles

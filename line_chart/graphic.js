@@ -1,86 +1,113 @@
-var { Sidechain } = require("@nprapps/sidechain");
+let { Sidechain } = require("@nprapps/sidechain");
 Sidechain.registerGuest();
 
-var renderLineChart = require("./renderLineChart");
-
-//Initialize graphic
-var onWindowLoaded = function () {
-  var series = formatData(window.DATA);
-  render(series);
-
-  window.addEventListener("resize", () => render(series));
+let d3 = {
+  ...require("d3-scale/dist/d3-scale.min"),
+  ...require("d3-shape/dist/d3-shape.min"),
 };
 
-//Format graphic data for processing by D3.
-var formatData = function (data) {
-  var series = [];
+let { isMobile } = require("./lib/breakpoints");
+let { html, svg, render } = require("lit-html");
+let COLORS = require("./lib/helpers/colors");
+let { key, yAxis, xAxis, grid } = require("./lib/chartAxes");
 
-  data.forEach(function (d) {
-    if (d.date instanceof Date) return;
-    var [m, day, y] = d.date.split("/").map(Number);
-    y = y > 50 ? 1900 + y : 2000 + y;
-    d.date = new Date(y, m - 1, day);
-  });
+let exclude = new Set(["date", "x"]);
+// convert date strings into a scalar value
+for (let item of window.DATA) {
+  let [month, day, year] = item.date.split("/").map(Number);
+  year += year < 50 ? 2000 : 1900;
+  item.x = new Date(year, month - 1, day);
+}
+window.DATA.sort((a, b) => a.date - b.date);
 
-  // Restructure tabular data for easier charting.
-  for (var column in data[0]) {
-    if (column == "date") continue;
+let container = document.querySelector(".graphic");
+renderLineChart(window.DATA, container);
+window.addEventListener("resize", () =>
+  renderLineChart(window.DATA, container)
+);
 
-    series.push({
-      name: column,
-      values: data.map((d) => ({
-        date: d.date,
-        amt: d[column],
-      })),
-    });
-  }
+function renderLineChart(chartData, container) {
+  let yContainer = container.querySelector(".y-axis");
+  let xContainer = container.querySelector(".x-axis");
+  let chartContainer = container.querySelector(".chart");
+  let keyContainer = container.querySelector(".mobile-key");
 
-  return series;
-};
+  let series = Object.keys(chartData[0]).filter((c) => !exclude.has(c));
+  let colorScale = d3
+    .scaleOrdinal()
+    .domain(series)
+    .range([
+      COLORS.teal2,
+      COLORS.purple2,
+      COLORS.peach2,
+      COLORS.blue2,
+      COLORS.gray2,
+    ]);
 
-// Render the graphic(s). Called by pym with the container width.
-var render = function (data) {
-  // Render the chart!
-  var container = ".graphic";
-  var element = document.querySelector(container);
-  var width = element.offsetWidth;
-  renderLineChart({
-    container,
-    width,
-    data,
-    dateColumn: "date",
-    valueColumn: "amt",
-  });
+  let dates = chartData.map((d) => d.x);
+  let xDomain = [Math.min(...dates), Math.max(...dates)];
+  let values = chartData.flatMap((d) => series.map((s) => d[s]));
+  let min = Math.min(...values);
+  let max = Math.max(...values);
+  if (min > 0) min = 0;
 
-  // replace the above code with the following lines for small multiples
+  let yScale = d3.scaleLinear()
+    .domain([min, max])
+    .range([yContainer.offsetHeight, 0])
+    .nice();
 
-  // var outer = document.querySelector(".graphic");
-  // outer.classList.add("small-multiple");
-  // for (var series of data) {
-  //   var container = document.querySelector(`[data-series="${series.name}"]`);
-  //   if (!container) {
-  //     container = document.createElement("div");
-  //     container.dataset.series = series.name;
-  //     var inner = document.createElement("div");
-  //     inner.className = "chart";
-  //     var head = document.createElement("h3");
-  //     head.append(series.name);
-  //     inner.append(head, container);
-  //     outer.append(inner);
-  //   }
-  //   var width = container.offsetWidth;
-  //   renderLineChart({
-  //     container,
-  //     width,
-  //     data: [series],
-  //     dateColumn: "date",
-  //     valueColumn: "amt"
-  //   });
-  // }
-};
+  let xScale = d3.scaleTime()
+    .domain(xDomain)
+    .range([0, xContainer.offsetWidth])
+    .nice();
 
-document.querySelector(".fallback").remove();
+  let config = {
+    series,
+    xScale,
+    yScale,
+    colorScale,
+    xFormat: (d) => d.getFullYear(),
+    yFormat: (d) => d.toFixed(0),
+    labelFormat: d => d.toFixed(1),
+    xTicks: isMobile.matches ? 5 : 7,
+    yTicks: isMobile.matches ? 4 : 7
+  };
 
-//Initially load the graphic
-// (NB: Use window.load to ensure all images have loaded)
-window.onload = onWindowLoaded;
+  render(key(config), keyContainer);
+  render(yAxis(config), yContainer);
+  render(xAxis(config), xContainer);
+  render(chart(window.DATA, config), chartContainer);
+}
+
+function chart(data, config) {
+  let {
+    xScale,
+    yScale,
+    labelFormat,
+    series,
+    colorScale,
+  } = config;
+  return html`
+    <svg>
+      ${grid(config)}
+      <g class="lines">
+        ${series.map((s) => {
+          let line = d3.line().x((d) => xScale(d.x)).y((d) => yScale(d[s]));
+          return svg`
+        <path d="${line(data)}" stroke="${colorScale(s)}" stroke-width="3" />`;
+        })}
+      </g>
+      <g class="value">
+        ${series.map((s) => {
+          let d = data.at(-1)
+          return svg`
+        <foreignObject x=${xScale(d.x) + 10} y=${yScale(d[s]) - 10} width="100%" height="100%">
+          <div>
+            <span class="series-label">${s}: </span>${labelFormat(d[s])}
+          </div>
+        </foreignObject>`;
+        })}
+      </g>
+    </svg>
+  `;
+}

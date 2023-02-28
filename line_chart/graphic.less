@@ -1,5 +1,16 @@
 @import "./lib/base";
 
+:root {
+  --spacing-left: 25px;
+  --spacing-right: 45px;
+  --spacing-bottom: 30px;
+  --spacing-top: 10px;
+
+  @media @desktop {
+    --spacing-right: 80px;
+  }
+}
+
 .lines {
   fill: none;
   stroke-width: 3px;
@@ -18,26 +29,76 @@
   }
 }
 
-.small-multiple {
+.chart-frame {
+  aspect-ratio: 4 / 3;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px 4px;
+  grid-template-columns: var(--spacing-left) 1fr;
+  grid-template-rows: 1fr var(--spacing-bottom);
+  grid-template-areas: 
+    "y chart"
+    "_ x";
+  padding-right: var(--spacing-right);
+  padding-top: var(--spacing-top);
+
+  .cell.y-axis { grid-area: y; }
+  .cell.x-axis { grid-area: x; }
+  .cell.chart { grid-area: chart; }
+
+  @media @desktop {
+    aspect-ratio: 16 / 9;
+  }
+
+  .cell {
+    position: relative;
+    overflow: visible;
+
+    svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+  }
+
+  .x-axis, .y-axis {
+    z-index: 9;
+  }
 }
 
-/* sample small multiple styles */
+.value div {
+  width: var(--spacing-right);
+  .sans-serif;
+  font-size: 15px;
+  font-weight: bold;
+  color: @gray2;
 
-[data-series="One"] .lines path {
-  stroke: red;
+  @media @mobile {
+    .series-label { display: none; }
+  }
 }
 
-[data-series="Two"] .lines path {
-  stroke: green;
-}
+.mobile-key ul {
+  display: none;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  font-family: @sans-serif;
 
-[data-series="Three"] .lines path {
-  stroke: blue;
-}
+  @media @mobile {
+    display: block;
+  }
 
-[data-series="Four"] .lines path {
-  stroke: orange;
+  li {
+    display: inline-block;
+    margin-right: 1em;
+  }
+
+  .key-block {
+    width: 1em;
+    display: inline-block;
+    vertical-align: middle;
+    border-bottom: 3px solid currentColor;
+  }
 }

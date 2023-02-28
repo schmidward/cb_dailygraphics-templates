@@ -1,0 +1,44 @@
+<%= await t.include("lib/_head.html") %>
+
+<% if (COPY.labels.headline) { %>
+<h1><%= t.smarty(COPY.labels.headline) %></h1>
+<% } %>
+
+<% if (COPY.labels.subhed) { %>
+<h2><%= t.smarty(COPY.labels.subhed) %></h2>
+<% } %>
+
+<div class="graphic" role="img"
+<% if (COPY.labels.screenreader) { %>
+  aria-label="<%- labels.screenreader %>"
+<% } %>
+>
+  <div class="mobile-key"></div>
+  <div class="chart-frame">
+    <div class="y-axis cell"></div>
+    <div class="chart cell"></div>
+    <div class="x-axis cell"></div>
+  </div>
+</div>
+
+<% if (COPY.labels.footnote) { %>
+<div class="footnotes">
+  <h4>Notes</h4>
+  <p><%= COPY.labels.footnote %></p>
+</div>
+<% } %>
+
+<div class="footer">
+  <% if (COPY.labels.source) { %><p>Source: <%= COPY.labels.source %></p><% } %>
+  <% if (COPY.labels.credit) { %><p>Credit: <%= COPY.labels.credit %></p><% } %>
+</div>
+
+<% if ("data" in COPY) { %>
+<script>
+  window.DATA = <%= JSON.stringify(COPY.data) %>;
+</script>
+<% } %>
+
+<script src="./graphic.js"></script>
+
+<%= await t.include("lib/_foot.html") %>
