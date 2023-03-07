@@ -3,8 +3,7 @@ Sidechain.registerGuest();
 
 // build our custom D3 object
 var d3 = {
-  ...require("d3-scale/dist/d3-scale.min"),
-  ...require("d3-selection/dist/d3-selection.min"),
+  ...require("d3-scale/dist/d3-scale.min")
 };
 
 var { COLORS, classify } = require("./lib/helpers");
@@ -32,7 +31,7 @@ var formatData = function () {
 
 // Render the graphic(s).
 var render = function () {
-  isNumeric = LABELS.is_numeric;
+  var isNumeric = LABELS.is_numeric;
 
   // Render the map!
   var container = "#state-grid-map";
@@ -40,6 +39,7 @@ var render = function () {
   var width = element.offsetWidth;
   renderStateGridMap({
     container,
+    element,
     width,
     data: DATA,
     // isNumeric will style the legend as a numeric scale
@@ -52,12 +52,12 @@ var renderStateGridMap = function (config) {
   var valueColumn = "category";
 
   // Clear existing graphic (for redraw)
-  var containerElement = d3.select(config.container);
-  containerElement.html("");
+  var containerElement = config.element;
+  containerElement.innerHTML = "";
 
   // Copy map template
-  var template = d3.select("#map-template");
-  containerElement.html(template.html());
+  var template = document.querySelector("#map-template");
+  containerElement.append(template.content.cloneNode(true));
 
   // Extract categories from data
   var categories = [];
@@ -84,11 +84,11 @@ var renderStateGridMap = function (config) {
   }
 
   // Create legend
-  var legendWrapper = containerElement.select(".key-wrap");
-  var legendElement = containerElement.select(".key");
+  var legendWrapper = containerElement.querySelector(".key-wrap");
+  var legendElement = containerElement.querySelector(".key");
 
   if (config.isNumeric) {
-    legendWrapper.classed("numeric-scale", true);
+    legendWrapper.classList.add("numeric-scale");
 
     var colorScale = d3
       .scaleThreshold()
@@ -103,29 +103,31 @@ var renderStateGridMap = function (config) {
   }
 
   colorScale.domain().forEach(function (key, i) {
-    var keyItem = legendElement.append("li").classed("key-item", true);
+    var keyItem = document.createElement("li")
+    legendElement.append(keyItem)
+    keyItem.classList.add("key-item");
 
-    keyItem.append("b").style("background", colorScale(key));
+    var b = document.createElement("b");
+    b.style.background = colorScale(key);
+    keyItem.append(b);
 
-    keyItem.append("label").text(key);
+    var label = document.createElement("label");
+    label.innerHTML = key;
+    keyItem.append(label);
 
     // Add the optional upper bound label on numeric scale
     if (config.isNumeric && i == categories.length - 1) {
       if (LABELS.max_label && LABELS.max_label !== "") {
-        keyItem.append("label").attr("class", "end-label").text(LABELS.max_label);
+        var upperBound = document.createElement("label");
+        upperBound.classList.add("end-label");
+        upperBound.innerHTML = LABELS.max_label;
+        keyItem.append(upperBound);
       }
     }
   });
 
   // Select SVG element
-  var chartElement = containerElement.select("svg");
-
-  // resize map (needs to be explicitly set for IE11)
-  chartElement.attr("width", config.width).attr("height", function () {
-    var s = d3.select(this);
-    var viewBox = s.attr("viewBox").split(" ");
-    return Math.floor((config.width * parseInt(viewBox[3])) / parseInt(viewBox[2]));
-  });
+  var chartElement = containerElement.querySelector("svg");
 
   // Set state colors
   config.data.forEach(function (state) {
@@ -133,48 +135,32 @@ var renderStateGridMap = function (config) {
       var stateClass = "state-" + classify(state.state_name);
       var categoryClass = "category-" + classify(state[valueColumn] + "");
 
-      chartElement
-        .select("." + stateClass)
-        .attr("class", `${stateClass} ${categoryClass} state-active`)
-        .attr("fill", colorScale(state[valueColumn]));
+      var selected = chartElement.querySelector("." + stateClass);
+      selected.setAttribute("class", `${stateClass} ${categoryClass} state-active`);
+      selected.setAttribute("fill", colorScale(state[valueColumn]));
     }
   });
 
-  // Draw state labels
-  chartElement
-    .append("g")
-    .selectAll("text")
-    .data(config.data)
-    .enter()
-    .append("text")
-    .attr("text-anchor", "middle")
-    .text(function (d) {
-      var state = STATES.filter((s) => s.name == d.state_name).pop();
-      return isMobile.matches ? state.usps : state.ap;
-    })
-    .attr("class", (d) =>
-      d[valueColumn] !== null && d[valueColumn] !== undefined
-        ? `category-${classify(d[valueColumn] + "")} label label-active`
-        : "label"
-    )
-    .attr("x", function (d) {
-      var className = `.state-${classify(d.state_name)}`;
-      var tileBox = $.one(className).getBBox();
-
-      return tileBox.x + tileBox.width * 0.52;
-    })
-    .attr("y", function (d) {
-      var className = ".state-" + classify(d.state_name);
-      var tileBox = $.one(className).getBBox();
-      var textBox = this.getBBox();
-      var textOffset = textBox.height / 2;
-
-      if (isMobile.matches) {
-        textOffset -= 1;
-      }
-
-      return tileBox.y + tileBox.height * 0.5 + textOffset;
-    });
+  var ns = chartElement.namespaceURI;
+  var labelGroup = document.createElementNS(ns, "g");
+  chartElement.append(labelGroup);
+  for (var d of config.data) {
+    var state = STATES.find(s => s.name == d.state_name);
+    var text = document.createElementNS(ns, "text");
+    text.setAttribute("text-anchor", "middle");
+    text.textContent = isMobile.matches ? state.usps : state.ap;
+    labelGroup.append(text);
+    if (valueColumn in d) {
+      text.setAttribute("class", `category-${classify(d[valueColumn] + "")} label label-active`);
+    } else {
+      text.setAttribute("class", "label");
+    }
+    var box = chartElement.querySelector(`.state-${classify(state.name)}`);
+    var boxBounds = box.getBBox();
+    var textBounds = text.getBBox();
+    text.setAttribute("x", boxBounds.x + boxBounds.width * .5 + .52);
+    text.setAttribute("y", boxBounds.y + boxBounds.width * .5 + textBounds.height * .6);
+  }
 };
 
 // Initially load the graphic

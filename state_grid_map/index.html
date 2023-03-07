@@ -27,7 +27,7 @@ aria-label="<%- COPY.labels.screenreader %>"
   <% if (COPY.labels.credit) { %><p>Credit: <%= COPY.labels.credit %></p><% } %>
 </div>
 
-<div id="map-template" style="display: none;">
+<template id="map-template">
   <div class="key-wrap">
     <% if (COPY.labels.legend_head) { %>
     <h3><%= COPY.labels.legend_head %></h3>
@@ -112,7 +112,7 @@ aria-label="<%- COPY.labels.screenreader %>"
       </g>
     </g>
   </svg>
-</div>
+</template>
 
 <script>
   window.LABELS = <%= JSON.stringify(COPY.labels) %>;
