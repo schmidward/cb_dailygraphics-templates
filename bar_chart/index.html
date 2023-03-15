@@ -1,3 +1,50 @@
+<%
+let colors = require("./lib/helpers/colors.js");
+
+// CONFIG
+let labelThreshold = .05; // value must be greater than this for visibility
+let valueFormat = v => (v * 100).toLocaleString() + "%"; // how to format each label
+let palette = [colors.teal2, colors.purple2, colors.peach2]; // in order of columns
+let exclusions = new Set(["label", "highlight", "group"]); // ignore these columns
+let max = 0;
+let min = 0;
+
+// generate a structured arrangement of the data:
+// grouped[group name].data = [row, row, row]
+// min and max express the greatest stacked values in the positive/negative directions
+
+let first = COPY.data[0];
+let columns = Object.keys(first).filter(k => !exclusions.has(k));
+let groups = {};
+for (let row of COPY.data) {
+  let g = row.group || "";
+  if (!(g in groups)) groups[g] = { data: [] };
+  let block = groups[g];
+  block.data.push(row);
+  let positiveSum = 0;
+  let negativeSum = 0;
+  for (let key of columns) {
+    let value = row[key];
+    if (value < 0) {
+      negativeSum += value;
+    } else {
+      positiveSum += value;
+    }
+  }
+  block.max = positiveSum;
+  block.min = negativeSum;
+  if (positiveSum > max) max = positiveSum;
+  if (negativeSum < min) min = negativeSum;
+}
+
+// the ratio of negative to positive range sizes
+// used to size the visualization grid columns
+let npRatio = Math.abs(min / max).toFixed(2);
+// lookup function for the palette colors
+let colorFormat = k => palette[columns.indexOf(k)];
+
+%>
+
 <%= await t.include("lib/_head.html") %>
 
 <% if (COPY.labels.headline) { %>
@@ -8,12 +55,92 @@
 <h2><%= t.smarty(COPY.labels.subhed) %></h2>
 <% } %>
 
-<div id="bar-chart" class="graphic" role="img"
-  <% if (COPY.labels.screenreader) { %>
-  aria-label="<%- COPY.labels.screenreader %>"
+<div class="graphic">
+<% if (columns.length > 1) { %>
+<ul class="key" aria-hidden="true">
+  <% for (var k of columns) { %>
+  <li class="key-item">
+    <b style="background: <%= colorFormat(k) %>"></b>
+    <%= k %>
   <% } %>
->
-<img src="fallback.png" alt="" class="fallback" />
+</ul>
+<% } %>
+
+<%
+  /*
+The bar chart is structured as a grid with three columns and n rows. The columns are used for the labels, negative bars (if any exist) and the positive bars. If there are no negative bars, we skip that column. In pseudocode, the structure should look something like this:
+
+div.rows
+  div.label
+  div.negative.zone
+    div.negative.bar for each series
+      div.series.sr-only (series label)
+      div.value
+
+  div.positive.zone
+    div.positive.bar for each series
+      div.series.sr-only
+      div.value
+
+  */
+%>
+
+
+<% for (let [ name, group ] of Object.entries(groups)) { %>
+  <div class="bar-group" style="--negative-size: <%= npRatio %>fr">
+
+    <% if (name) { %>
+    <h3 class="group-label"><%= name %></h3>
+    <% } %>
+    
+    <div class="rows <%= min < 0 ? "has-negative" : "all-positive" %>">
+
+      <% for (let row of group.data) { %>
+        <div class="label"><%= row.label %></div>
+
+        <% if (min < 0) { %>
+        <div class="negative zone">
+          <%
+            // find all columns in the row with negative values
+            var negatives = columns.filter(k => row[k] && row[k] < 0);
+            for (var k of negatives) {
+          %>
+          <div class="negative bar <%= k %>"
+            style="width: <%= row[k] / min * 100 %>%; background: <%= colorFormat(k) %>;">
+            <div class="sr-only series">
+              <%= k %>
+            </div>
+            <div class="value <%= Math.abs(row[k]) < labelThreshold ? "under-threshold" : "" %>">
+              <%= valueFormat(row[k]) %>  
+            </div>
+          </div>
+          <% } %>
+        </div>
+        <% } %>
+        
+        <div class="positive zone">
+          <%
+            // find all columns in the object with positive values
+            var positives = columns.filter(k => row[k] && row[k] > 0);
+            for (var k of positives) {
+          %>
+          <div class="positive bar <%= k %>" 
+            style="width: <%= row[k] / max * 100 %>%; background: <%= colorFormat(k) %>;">
+            <div class="sr-only series">
+              <%= k %>
+            </div>
+            <div class="value <%= Math.abs(row[k]) < labelThreshold ? "under-threshold" : "" %>">
+              <%= valueFormat(row[k]) %>  
+            </div>
+          </div>
+          <% } %>
+        </div>
+
+      <% } %>
+
+    </div>
+  </div>
+<% } %>
 </div>
 
 <div class="footer">

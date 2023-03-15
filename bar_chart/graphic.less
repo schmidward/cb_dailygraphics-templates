@@ -1,6 +1,80 @@
 @import "./lib/base";
 
-.annotation-label {
-  font-style: italic;
-  font-size: 0.8em;
+.bar-group {
+  --label-size: 130px;
+  --label-gap: 10px;
+  font-family: @sans-serif;
+
+  .group-label {
+    text-transform: uppercase;
+    margin: 16px 0 0;
+    font-weight: bold;
+  }
+
+  .rows {
+    display: grid;
+    gap: 4px 0;
+    grid-template-columns: var(--label-size, 1fr) var(--positive-size, 1fr);
+    align-items: center;
+
+    &.has-negative {
+      grid-template-columns: 
+        var(--label-size, 1fr)
+        var(--negative-size, 1fr)
+        var(--positive-size, 1fr);
+
+      .zone.positive {
+        border-left: 1px solid black;
+      }
+    }
+
+    .label {
+      padding-right: var(--label-gap, 10px);
+      text-align: right;
+    }
+
+    .zone {
+      display: flex;
+
+      &.negative {
+        flex-direction: row-reverse;
+      }
+    }
+
+    .bar {
+      display: flex;
+      height: 1.5em;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+
+      .value {
+        color: white;
+        font-size: 13px;
+        line-height: 1;
+
+        &.under-threshold {
+          .sr-only;
+          width: auto;
+          height: auto;
+          opacity: 1;
+        }
+      }
+
+      &.positive:last-child .value.under-threshold {
+        position: absolute;
+        left: calc(100% + 4px);
+        color: black;
+      }
+
+      &.negative:last-child .value.under-threshold {
+        position: absolute;
+        right: calc(100% + 4px);
+        text-align: right;
+        color: black;
+      }
+    }
+
+
+  }
 }
