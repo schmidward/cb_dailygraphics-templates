@@ -159,7 +159,7 @@ svg { margin-left: 8px; }
 :host([sort="descending"]) .up-arrow { display: none }
 </style>
 <slot></slot>
-<svg width="10" height="16" viewBox="0 0 10 16">
+<svg width="10" height="16" viewBox="0 0 10 16" aria-label="sortable" role="image">
   <path class="up-arrow" d="M5,0 L10,5 L0,5Z" fill="currentColor" />
   <path class="separator" d="M0,8 L10,8" stroke="currentColor" strokeWidth=2 />
   <path class="down-arrow" d="M5,16 L0,11 L10,11Z" fill="currentColor" />
@@ -170,6 +170,16 @@ class SortableHeader extends HTMLElement {
     super();
     this.attachShadow({ mode: "open" });
     this.shadowRoot.innerHTML = sortHeaderTemplate;
+  }
+
+  static observedAttributes = ["sort"];
+  attributeChangedCallback(attr, was, value) {
+    var icon = this.shadowRoot.querySelector("svg");
+    if (value) {
+      icon.setAttribute("aria-label", "sorted " + value);
+    } else {
+      icon.setAttribute("aria-label", "sortable");
+    }
   }
 }
 
