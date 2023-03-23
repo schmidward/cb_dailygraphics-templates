@@ -1,0 +1,59 @@
+<style>
+.ui {
+  text-align: right;
+  padding: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+
+@media (max-width: 600px) {
+  .ui {
+    display: block;
+  }
+}
+
+[type=search] {
+  margin-right: 4px;
+}
+
+.pagination {
+  flex: 1;
+}
+
+:host([searching]) .pagination {
+  display: none;
+}
+
+.clear-search {
+  display: none;
+}
+
+:host([searching]) .clear-search {
+  display: inline-block;
+}
+</style>
+
+
+<div class="ui">
+  <div class="search">
+    <input type="search" placeholder="Type to search" as="search">
+    <button class="clear-search" as="clear">Clear</button>
+  </div>
+  <div class="pagination">
+    Page 
+    <select class="pages" as="selects"></select>
+    of
+    <span class="total" as="totals"></select>
+  </div>
+</div>
+      
+<slot></slot>
+
+<div class="ui">
+  <div class="pagination">
+    Page 
+    <select class="pages" as="selects"></select>
+    of
+    <span class="total" as="totals"></select>
+  </div>
+</div>

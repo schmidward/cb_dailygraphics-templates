@@ -8,13 +8,13 @@
 <h2><%= t.smarty(COPY.labels.subhed) %></h2>
 <% } %>
 
-<div class="graphic" id="table-graphic">
+<pagination-controller class="graphic" id="table-graphic">
   <table id="state-table" role="table">
     <thead role="rowgroup">
       <tr role="row">
         <% for (var c of COPY.columns) { %>
-        <th role="columnheader">
-          <div class="header <%= c.className %>"><%= c.label %></div>
+        <th role="columnheader" class="<%= c.className %>">
+          <%= c.label %>
         </th>
         <% } %>
       </tr>
@@ -31,7 +31,7 @@
   <% }) %>
 
   </table>
-</div>
+</pagination-controller>
 
 <% if (COPY.labels.footnote) { %>
 <div class="footnotes">

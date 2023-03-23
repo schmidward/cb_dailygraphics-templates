@@ -1,29 +1,5 @@
 @import "./lib/base";
 
-// Base table styles
-.table-container {
-  border-top: 2px solid @teal1;
-  border-bottom: 2px solid @teal1;
-
-  tbody {
-    display: block;
-    width: 100%;
-  }
-
-  .scroll-yes {
-    tbody {
-      max-height: 390px;
-      overflow-y: auto;
-    }
-  }
-
-  tr {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-  }
-}
-
 table {
   width: 100%;
   padding: 0;
@@ -32,12 +8,6 @@ table {
   font-size: 14px;
 
   thead td {
-    font-weight: bold;
-  }
-
-  tr.shadedrow {
-    background-color: @gray4;
-    color: @gray1;
     font-weight: bold;
   }
 
@@ -50,9 +20,6 @@ table {
   }
 
   thead tr th {
-    position: sticky;
-    position: -webkit-sticky;
-    top: 0;
     background-color: @teal1;
     color: white;
   }
@@ -60,47 +27,9 @@ table {
   td {
     vertical-align: top;
   }
-}
 
-// Tablesorter styles
-thead {
-  cursor: default;
-  .arrow-up,
-  .arrow-down {
-    cursor: pointer;
-  }
-
-  .header,
-  .sorter,
-  .sorter * {
-    display: inline-block;
-  }
-
-  .sorter {
-    -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    margin-left: 4px;
-    color: white;
-    font-size: 12px;
-    user-select: none; /* supported by Chrome and Opera */
-    .arrow-down {
-      margin-left: -4px;
-    }
-  }
-
-  .sort-header {
-    &[aria-sort="ascending"] {
-      .arrow-up {
-        color: @peach2;
-      }
-    }
-    &[aria-sort="descending"] {
-      .arrow-down {
-        color: @peach2;
-      }
-    }
+  tr:nth-child(2n + 1) {
+    background: #F8F8F8;
   }
 }
 
@@ -142,14 +71,6 @@ thead {
       }
     }
   }
-
-  table.scroll-yes {
-    thead {
-      tr {
-        width: 98% !important;
-      }
-    }
-  }
 }
 
 /*
@@ -169,18 +90,6 @@ thead {
       tr {
         // display: flex;
       }
-      .sort-header {
-        display: inline-block;
-        width: 50%;
-        border: 1px solid #fff;
-        padding-top: 4px;
-        padding-bottom: 4px;
-      }
-    }
-
-    .mobile-table-header {
-      .sans-serif();
-      font-size: 16px;
     }
 
     tr,
@@ -227,4 +136,13 @@ thead {
       content: attr(data-title) ":\00A0";
     }
   }
+}
+
+/* pagination controller styles */
+
+pagination-controller[empty]::after {
+  display: block;
+  content: "No results found";
+  text-align: center;
+  padding: 10px 20px;
 }
