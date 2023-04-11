@@ -1,0 +1,24 @@
+<div class="app"></div>
+<br>
+<div class="credit">Development: <%= COPY.labels.credit %></div>
+
+<%
+  for (var c of candidates) {
+    for (var q in c) {
+      if (["short", "responded", "photo", "name", "age", "children", "website", "party","party_short", "occupation", "residence", "incumbent","work","workplace"].includes(q)) continue;
+      if (!c[q]) continue;
+      var text = c[q] || COPY.LABELS.noresponse;
+      text = text.replace(/•/g, "-").replace(/\n{1}/g, "\n\n").replace(/ {2,}/g, " ");
+      c[q] = t.renderMarkdown(text);
+    }
+  }
+%>
+
+<script type="text/javascript">
+  window.QUESTIONS = <%= JSON.stringify(questions) %>;
+  window.CANDIDATES = <%= JSON.stringify(candidates) %>;
+  window.LABELS = <%= JSON.stringify(COPY.labels) %>;
+  window.BIO = <%= JSON.stringify(COPY.bio) %>;
+</script>
+
+<script src="./graphic.js"></script>

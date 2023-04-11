@@ -1,0 +1,211 @@
+@import "./lib/base";
+
+body {
+  padding: 0;
+}
+
+a[href], a[href]:link, a[href]:visited {
+  text-decoration: underline;
+}
+
+a:not([href]) { text-decoration: none }
+
+.race-dropdown {
+  display: none;
+  padding: 12px 0 24px 0;
+  text-align: center;
+
+  &.visible {
+    display: block;
+  }
+
+  label {
+    color: @teal1;
+    font-family: @sans-serif;
+    text-transform: uppercase;
+  }
+
+  select {
+    margin-left: 12px;
+  }
+}
+
+.app {
+  font-family: @sans-serif;
+}
+
+.credit{
+  font-size: 12px;
+}
+
+.home-link {
+  text-transform: uppercase;
+  margin: 20px 0;
+  display: block;
+}
+
+h3 {
+  font-size: 18px;
+  text-transform: none;
+}
+
+.subhed {
+  text-align: center;
+  font-size: 16px;
+  text-transform: none;
+}
+
+.mug  {
+  border-radius: 100%;
+  object-position: center top;
+  object-fit: cover;
+  width: 80px;
+  height: 80px;
+  display: block;
+  margin: auto;
+  background: black;
+
+  &.placeholder {
+    background: @teal3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // font-size: 8px;
+
+    &::before {
+      content: "No photo";
+    }
+  }
+}
+
+blockquote {
+  font-family: @serif;
+  padding: 0;
+  padding-left: 16px;
+  margin: 0;
+}
+
+[data-focus] {
+  outline: none;
+}
+
+.home.view {
+  h3 {
+    text-align: center;
+    display: block;
+    font-size: 24px;
+    margin-bottom: 0;
+  }
+
+  hr {
+    border-bottom: 1px solid @teal3;
+    margin-bottom: 8px;
+    width: 80%;
+    max-width: 400px;
+    margin: 0 auto 16px;
+  }
+
+  ul.people {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .response {
+      display: block;
+      font: 8px;
+      font-style: italic;
+    }
+
+    @media @mobile {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .mug {
+      width: 80px;
+      height: 80px;
+    }
+
+    li {
+      display: block;
+      margin-bottom: 12px;
+      text-align: center;
+      flex: 0 0 20%;
+
+      .aurora & {
+        flex: 0 0 25%;
+      }
+
+      @media @mobile {
+        flex: 0 0 33%;
+      }
+    }
+  }
+
+  ul.questions {
+    max-width: 600px;
+    margin: auto;
+    display: block;
+    font-size: 18px;
+    list-style: inside;
+    padding: 0;
+
+    li {
+      margin-bottom: 8px;
+    }
+  }
+}
+
+.candidate.view {
+
+  .bio {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+
+    .mug {
+      float: left;
+      margin: 20px;
+      overflow: visible;
+      width: 150px;
+      height: 150px;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 24px;
+    }
+  }
+
+  .questions {
+    .q {
+      margin-bottom: 40px;
+    }
+  }
+
+  .compare-link {
+    display: block;
+    text-transform: uppercase;
+    text-align: right;
+  }
+}
+
+.questions.view {
+
+  h4 {
+    display: flex;
+    align-items: center;
+  }
+
+  .mug {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    margin: 0 16px 0 0;
+    text-align: center;
+  }
+
+
+}
