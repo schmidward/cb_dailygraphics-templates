@@ -5,11 +5,12 @@
 <%
   for (var c of candidates) {
     for (var q in c) {
-      if (["short", "responded", "photo", "name", "age", "children", "website", "party","party_short", "occupation", "residence", "incumbent","work","workplace"].includes(q)) continue;
-      if (!c[q]) continue;
-      var text = c[q] || COPY.LABELS.noresponse;
-      text = text.replace(/•/g, "-").replace(/\n{1}/g, "\n\n").replace(/ {2,}/g, " ");
-      c[q] = t.renderMarkdown(text);
+      for (var question of questions) {
+        var q = question.short;
+        var text = c[q] || `*${COPY.labels.noresponse}*`;
+        text = text.replace(/•/g, "-").replace(/\n{1}/g, "\n\n").replace(/ {2,}/g, " ");
+        c[q] = t.renderMarkdown(text);
+      }
     }
   }
 %>

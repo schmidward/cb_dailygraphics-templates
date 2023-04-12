@@ -1,6 +1,6 @@
 module.exports = `
 <div class="candidate view">
-  <% var { markup, candidate, questions } = data; %>
+  <% var { candidate, questions } = data; %>
   <a class="home-link" href="#/">&laquo; See all</a>
 
   <div class="bio">
@@ -34,10 +34,10 @@ module.exports = `
     <% questions.forEach(function(q) { %>
     <div class="q">
       <h4>Q:
-        <% if (q.reader) { %>
-        (Reader-submitted)
-        <% } %>
         <%= q.question %>
+        <% if (q.reader) { %>
+          (Reader-submitted)
+        <% } %>
       </h4>
       <blockquote>
         <p>
