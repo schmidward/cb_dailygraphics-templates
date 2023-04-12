@@ -21,7 +21,7 @@ The Google Sheets template contains five tabs:
 * Write something in the `incumbent` field to add incumbent styling.
 * If the candidate provided a headshot, the `photo` field will match to the file of the corresponding name in the `/assets` folder. The filename must match exactly.
 
-This sheet also uses `_` as a pre-append to indicate that a field should be ignored. 
+This sheet also uses `_` as a prefix to indicate that a field should be ignored. 
 
 You will need to relabel your candidate questions with shorthand codes that match the labels in the `questions` tab.
 
