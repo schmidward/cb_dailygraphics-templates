@@ -76,7 +76,7 @@ function renderLineChart(chartData, container) {
   render(key(config), keyContainer);
   render(yAxis(config), yContainer);
   render(xAxis(config), xContainer);
-  render(chart(window.DATA, config), chartContainer);
+  render(chart(chartData, config), chartContainer);
 }
 
 function chart(data, config) {
