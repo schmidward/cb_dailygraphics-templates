@@ -5,9 +5,11 @@
   --spacing-right: 45px;
   --spacing-bottom: 30px;
   --spacing-top: 10px;
+  --chart-aspect-ratio: 4 / 3;
 
   @media @desktop {
     --spacing-right: 80px;
+    --chart-aspect-ratio: 16 / 9;
   }
 }
 
@@ -30,7 +32,7 @@
 }
 
 .chart-frame {
-  aspect-ratio: 4 / 3;
+  aspect-ratio: var(--chart-aspect-ratio);
   display: grid;
   grid-template-columns: var(--spacing-left) 1fr;
   grid-template-rows: 1fr var(--spacing-bottom);
@@ -43,10 +45,6 @@
   .cell.y-axis { grid-area: y; }
   .cell.x-axis { grid-area: x; }
   .cell.chart { grid-area: chart; }
-
-  @media @desktop {
-    aspect-ratio: 16 / 9;
-  }
 
   .cell {
     position: relative;
