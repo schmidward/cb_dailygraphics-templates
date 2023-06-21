@@ -11,20 +11,28 @@ let { html, svg, render } = require("lit-html");
 let COLORS = require("./lib/helpers/colors");
 let { key, yAxis, xAxis, grid } = require("./lib/chartAxes");
 
-let exclude = new Set(["date", "x"]);
+let exclude = new Set(["date", "x", "group"]);
 // convert date strings into a scalar value
 for (let item of window.DATA) {
   let [month, day, year] = item.date.split("/").map(Number);
   year += year < 50 ? 2000 : 1900;
   item.x = new Date(year, month - 1, day);
 }
-window.DATA.sort((a, b) => a.date - b.date);
+window.DATA.sort((a, b) => a.x - b.x);
 
-let container = document.querySelector(".graphic");
-renderLineChart(window.DATA, container);
-window.addEventListener("resize", () =>
-  renderLineChart(window.DATA, container)
-);
+var containers = document.querySelectorAll(".chart-container");
+draw();
+window.addEventListener("resize", draw);
+
+function draw() {
+  for (var container of containers) {
+    var data = window.DATA;
+    if (container.dataset.group) {
+      data = data.filter(d => d.group == container.dataset.group);
+    }
+    renderLineChart(data, container);
+  }
+}
 
 function renderLineChart(chartData, container) {
   let yContainer = container.querySelector(".y-axis");
@@ -32,7 +40,7 @@ function renderLineChart(chartData, container) {
   let chartContainer = container.querySelector(".chart");
   let keyContainer = container.querySelector(".mobile-key");
 
-  let series = Object.keys(chartData[0]).filter((c) => !exclude.has(c));
+  let series = Object.keys(chartData[0]).filter((c) => chartData[0][c] && !exclude.has(c));
   let colorScale = d3
     .scaleOrdinal()
     .domain(series)

@@ -8,17 +8,28 @@
 <h2><%= t.smarty(COPY.labels.subhed) %></h2>
 <% } %>
 
-<div class="graphic" role="img"
+<%
+  var groups = new Set(COPY.data.map(d => d.group));
+%>
+
+<div class="graphic <%= groups.size > 1 ? "small-multiple" : "single" %>" role="img"
 <% if (COPY.labels.screenreader) { %>
   aria-label="<%- labels.screenreader %>"
 <% } %>
 >
-  <div class="mobile-key"></div>
-  <div class="chart-frame">
-    <div class="y-axis cell"></div>
-    <div class="chart cell"></div>
-    <div class="x-axis cell"></div>
+<% for (var group of groups) { %>
+  <div class="chart-container" data-group="<%- group %>">
+    <% if (group) { %>
+    <h4><%= group %></h4>
+    <% } %>
+    <div class="mobile-key"></div>
+    <div class="chart-frame">
+      <div class="y-axis cell"></div>
+      <div class="chart cell"></div>
+      <div class="x-axis cell"></div>
+    </div>
   </div>
+<% } %>
 </div>
 
 <% if (COPY.labels.footnote) { %>
