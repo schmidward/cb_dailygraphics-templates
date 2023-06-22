@@ -5,8 +5,8 @@ Line charts are built on a CSS grid for the different sections.
 
 ====== ==========
 Y Axis Chart area
-====== ----------
-       X Axis
+====== ==========
+spacer X Axis
 ====== ==========
 
 The aspect ratio and sizes of the grid are controlled using CSS variables at the top of the graphic.less file.
@@ -18,6 +18,7 @@ The grid for each chart is inserted via the EJS template, so that CSS can be app
 As much as possible, a priority for this template is to keep all chart configuration in a single, compact location. So just as the CSS controls are at the top of the stylesheet in custom properties, the chart JS passes a common config object into the different rendering functions. This config object should look roughly like this:
 
 .. code:: javascript
+
   let config = {
     series, // list of lines to draw from object properties
     xScale, // D3 scale for the x-axis
@@ -40,5 +41,6 @@ FAQ
 Yes, this template supports that natively. Add a ``group`` column to your data to assign a given row to a particular chart. The ``group`` value will also be used for the chart subheads, and it will be added as the ``data-group`` attribute for each small multiple. You can then use this to tweak the individual styles. For example, you might use the following rule to adjust the y-axis spacing on a test result chart:
 
 .. code:: css
+
   [data-group="Reading"] { --spacing-left: 35px; }
 
