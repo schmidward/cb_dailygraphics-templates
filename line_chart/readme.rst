@@ -48,7 +48,7 @@ Yes, this template supports that natively. Add a ``group`` column to your data t
 
 Sure. As one method, create a list that contains exceptions to your default axis settings. Then add a ternary to check for those exceptions on the yScale max, yFormat labels, and labelFormat labels. 
 
-For instance:
+For instance, this example switches between a percent scale capped at 20% and an absolute scale capped at 3,000, due to differences in state data reporting:
 
 .. code:: javascript
 
