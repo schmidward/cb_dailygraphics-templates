@@ -50,19 +50,19 @@ Sure. As one method, create a list that contains exceptions to your default axis
 
 For instance:
 
-code:: javascript
+.. code:: javascript
 
   let absoluteStates = new Set(["Maine"]);
 
 Change the axis max conditionally:
 
-code:: javascript
+.. code:: javascript
 
   let max = absoluteStates.has(state) ? 3000 : 20;
 
 Change the labels conditionally:
 
-code:: javascript
+.. code:: javascript
 
     yFormat: absoluteStates.has(state) ? (d) => d.toLocaleString() : (d) => d.toFixed(0) + "%",
     labelFormat: absoluteStates.has(state) ? d => d.toLocaleString() : d => d.toFixed(1) + "%",
@@ -71,7 +71,7 @@ code:: javascript
 
 The default date formatter is:
 
-code:: javascript
+.. code:: javascript
 
   for (let item of window.DATA) {
     let [month, day, year] = item.date.split("/").map(Number);
