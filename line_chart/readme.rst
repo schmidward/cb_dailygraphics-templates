@@ -44,6 +44,7 @@ Yes, this template supports that natively. Add a ``group`` column to your data t
 
   [data-group="Reading"] { --spacing-left: 35px; }
 
+
 **Can I use different y-axis data formats and labeling methods on certain small multiples?**
 
 Sure. As one method, create a list that contains exceptions to your default axis settings. Then add a ternary to check for those exceptions on the yScale max, yFormat labels, and labelFormat labels. 
@@ -67,9 +68,9 @@ Change the labels conditionally:
     yFormat: absoluteStates.has(state) ? (d) => d.toLocaleString() : (d) => d.toFixed(0) + "%",
     labelFormat: absoluteStates.has(state) ? d => d.toLocaleString() : d => d.toFixed(1) + "%",
 
-**What if I don't have my data in DD/MM/YYYY format?**
+**What if I don't have my data in DD/MM/YY format?**
 
-The default date formatter is:
+The default date formatter, based on the sample data in the template sheet, is:
 
 .. code:: javascript
 
@@ -79,4 +80,12 @@ The default date formatter is:
     item.x = new Date(year, month - 1, day);
   }
 
-As one option, you can just add 1/1/YYYY as the prefix to each year, then adjust the labels to reflect only the year. Alternatively, you can rewrite the date formatter.
+Because this code adds the millenium to the year, if you write four-digit years or only include the year in the date column, you will end up with nonsense dates in your chart.
+
+As one option, you can just add 1/1/YY as the prefix to each year, then adjust the labels to reflect only the year. Alternatively, you can rewrite the date formatter. If you just want to write the year in your sheet, it's actually simpler than the default:
+
+.. code:: javascript
+
+  for (let item of window.DATA) {
+    item.x = new Date(item.date, 0, 1);
+  }
