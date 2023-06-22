@@ -117,3 +117,13 @@ for (let item of window.DATA) {
   item.x = new Date(item.date, 0, 1);
 }
 ```
+
+**How do I prevent a column from being formatted?**
+
+Add an `_` as a prefix in your Google Sheet to prevent the column from reaching the EJS processing.
+
+If you want to process the information in EJS (e.g. for text data in a tooltip), but do not want it reflected in the chart, *do not* use a `_` prefix but *do* include the name of the column in the exclusions line.
+
+``` javascript
+let exclude = new Set(["date", "x", "group"]);
+````
