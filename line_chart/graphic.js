@@ -102,7 +102,7 @@ function chart(data, config) {
         ${series.map((s) => {
           let line = d3.line().x((d) => xScale(d.x)).y((d) => yScale(d[s]));
           return svg`
-        <path d="${line(data)}" stroke="${colorScale(s)}" stroke-width="3" />`;
+        <path d="${line(data)}" stroke="${colorScale(s)}" stroke-width="3" class="${s}" />`;
         })}
       </g>
       <g class="value">
