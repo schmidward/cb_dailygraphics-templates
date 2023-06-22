@@ -3,9 +3,9 @@ Line Chart
 
 Line charts are built on a CSS grid for the different sections.
 
-  Y Axis   Chart area
-  -------- ------------
-  spacer   X Axis
+| Y Axis   | Chart area  |
+| -------- | ----------- |
+|          | X Axis      |
 
 The aspect ratio and sizes of the grid are controlled using CSS
 variables at the top of the graphic.less file.
