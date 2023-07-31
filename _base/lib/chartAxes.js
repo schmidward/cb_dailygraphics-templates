@@ -7,7 +7,7 @@ function key({ series, colorScale: scale }) {
       ${series.map(
         (s) => html`
         <li>
-          <span class="key-block" style="color: ${scale(s)}"></span>
+          <svg width=16 height=16><path data-series=${s} d="M0,8 H16" stroke="${scale(s)}" stroke-width=3 /></svg>
           ${s}
         </li>
         `
