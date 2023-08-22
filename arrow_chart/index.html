@@ -1,0 +1,73 @@
+<%= await t.include("lib/_head.html") %>
+
+<% if (COPY.labels.headline) { %>
+<h1><%= t.smarty(COPY.labels.headline) %></h1>
+<% } %>
+
+<% if (COPY.labels.subhed) { %>
+<h2><%= t.smarty(COPY.labels.subhed) %></h2>
+<% } %>
+
+<%
+var groups = {};
+var id = 0;
+for (var row of COPY.data) {
+  row.id = id++;
+  var g = row.group || "";
+  if (!groups[g]) groups[g] = [];
+  groups[g].push(row);
+}
+%>
+
+<div class="arrow graphic" role="img"
+<% if (COPY.labels.screenreader) { %>
+aria-label="<%- COPY.labels.screenreader %>"
+<% } %>
+>
+  <div class="columns">
+
+    <div class="label rows">
+      <% for (var [label, items] of Object.entries(groups)) { %>
+        <% if (label) { %>
+          <h3><%= label %></h3>
+        <% } %>
+        <% for (var item of items) { %>
+          <div class="row" data-row="<%= item.id %>">
+            <%= item.label %>
+            <span class="sr-only">
+              From <%= item.from %>
+              to <%= item.to %>
+            </span>
+          </div>
+        <% } %>
+      <% } %>
+    </div>
+
+    <div class="arrow-box">
+      <svg class="canvas">
+      </svg>
+    </div>
+  </div>
+</div>
+
+<% if (COPY.labels.footnote) { %>
+<div class="footnotes">
+  <h4>Notes</h4>
+  <p><%= COPY.labels.footnote %></p>
+</div>
+<% } %>
+
+<div class="footer">
+  <% if (COPY.labels.source) { %><p>Source: <%= COPY.labels.source %></p><% } %>
+  <% if (COPY.labels.credit) { %><p>Credit: <%= COPY.labels.credit %></p><% } %>
+</div>
+
+<% if ("data" in COPY) { %>
+<script>
+  window.DATA = <%= JSON.stringify(COPY.data) %>;
+</script>
+<% } %>
+
+<script src="./graphic.js"></script>
+
+<%= await t.include("lib/_foot.html") %>
