@@ -38,7 +38,9 @@ module.exports = `
 
   <h3>Questions</h3>
   <hr>
+  <% if (data.questions.filter(q => q.reader).length) { %>
   <div class="subhed">Reader-submitted questions are indicated with &#128172;</i></div>
+  <% } %>
   <ul class="questions">
     <% data.questions.forEach(function(q) { %>
     <li> 
